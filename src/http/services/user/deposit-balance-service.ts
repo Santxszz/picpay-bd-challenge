@@ -1,6 +1,6 @@
-import bcrypt from "bcrypt";
 import mongoose, { mongo } from "mongoose";
-import { v4 as uuidv4 } from "uuid";
+import dotenv from "dotenv";
+dotenv.config();
 
 import userProfile from "../../database/schemas/users/Users";
 import AppError from "../../middlewares/AppError";
@@ -21,9 +21,9 @@ export default class DepositBalanceService {
 		}
 
 		const currentBalance = await walletSchema.findOne({ user_id: userId });
-        const currentAccount = await userSchema.findById(userId)
+		const currentAccount = await userSchema.findById(userId);
 
-		const updateBalance = await walletSchema.findOneAndUpdate(
+		await walletSchema.findOneAndUpdate(
 			{ user_id: userId },
 			{
 				$set: {
@@ -32,12 +32,14 @@ export default class DepositBalanceService {
 			},
 		);
 
-        const responseObject = {
-            name: currentAccount.name,
-            email: currentAccount.email,
-            account_category: currentAccount.account_category,
-            ammount: updateBalance.balance
-        }
+		const balanceUpdated = await walletSchema.findOne({ user_id: userId });
+
+		const responseObject = {
+			name: currentAccount.name,
+			email: currentAccount.email,
+			account_category: currentAccount.account_category,
+			ammount: balanceUpdated.balance,
+		};
 
 		return responseObject;
 	}
