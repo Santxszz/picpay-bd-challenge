@@ -3,6 +3,7 @@ import CreateLoginService from "../../services/user/create-user-service";
 import AuthUserService from "../../services/auth/auth-user-service";
 import CreateKeyTransferService from "../../services/user/create-key-transfer-service";
 import DepositBalanceService from "../../services/user/deposit-balance-service";
+import TransferService from "../../services/user/transfer-service";
 
 export default class UserController {
 	public async register(req: Request, res: Response): Promise<Response> {
@@ -46,7 +47,18 @@ export default class UserController {
 			ammount,
 		});
 
+		return res.status(200).json(depositedAmmount);
+	}
 
-		return res.status(200).json(depositedAmmount)
+	public async transfer(req: Request, res: Response): Promise<Response> {
+		const { userId } = req.params;
+		const ammount = Number(req.body.ammount);
+		const keyTransfer = req.body.keyTransfer;
+
+		const transferService = new TransferService();
+		const transferedAmmount = transferService.execute({userId, keyTransfer, ammount})
+
+		
+		return res.status(200).json(transferedAmmount)
 	}
 }
