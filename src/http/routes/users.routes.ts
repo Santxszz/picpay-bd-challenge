@@ -60,4 +60,19 @@ authRoutes.post(
 	userController.deposit,
 );
 
+authRoutes.post(
+	"/user/:userId/trasnfer",
+	celebrate({
+		[Segments.BODY]: {
+			keyTransfer: Joi.string().required(),
+			ammount: Joi.number().required(),
+		},
+		[Segments.PARAMS]: {
+			userId: Joi.string().required(),
+		},
+	}),
+	checkUserAuth,
+	userController.transfer,
+);
+
 export default authRoutes;
