@@ -75,4 +75,15 @@ authRoutes.post(
 	userController.transfer,
 );
 
+authRoutes.get(
+	"/user/:userId/info",
+	celebrate({
+		[Segments.PARAMS]: {
+			userId: Joi.string().required(),
+		},
+	}),
+	checkUserAuth,
+	userController.info,
+);
+
 export default authRoutes;
